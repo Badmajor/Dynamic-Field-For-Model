@@ -1,9 +1,6 @@
-version: '3.3'
-
 volumes:
   pg_data:
   static:
-  media:
 
 services:
   db:
@@ -11,15 +8,33 @@ services:
     env_file: .env
     volumes:
       - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}" ]
+      interval: 3s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
 
   backend:
-    image: badmajor/elmobil_backend
+    build:
+      context:
+        ../dynamic_fields
+      dockerfile: ./Dockerfile
     env_file: .env
     volumes:
       - static:/static/
+    command:
+      - /bin/sh
+      - -c
+      - |
+        python manage.py collectstatic -c --noinput
+        cp -r ./static/. /static
+        python manage.py makemigrations
+        python manage.py migrate
+        gunicorn --bind 0.0.0.0:8000 config.wsgi
     depends_on:
-      - db
-
+      db:
+        condition: service_healthy
 
   nginx:
     image: nginx:1.19.3
