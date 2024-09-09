@@ -4,7 +4,7 @@ from . import models
 
 
 class VacancyListView(ListView):
-    model=models.Vacancy
+    model = models.Vacancy
 
 
 class ProfessionListView(ListView):
