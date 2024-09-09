@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}
+  Выбор профессии
+{% endblock %}
+{% block content %}
+   <h1>Выберите профессию для вакансии</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label for="profession">Профессия:</label>
+        <select name="profession" id="profession">
+          {% for profession in professions %}
+            <option value="{{ profession.id }}">{{ profession.title }}</option>
+          {% endfor %}
+        </select>
+        <button type="submit">Submit</button>
+    </form>
+{% endblock %}

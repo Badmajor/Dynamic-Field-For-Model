@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="container">
+    <h1 class="mt-5">{{ title_page }}</h1>
+    <div class="row">
+      {% for profession in object_list %}
+        <div class="col-md-8 offset-md-2 mb-5">
+          <article class="card">
+            <div class="card-body">
+              <h2 class="card-title">{{ profession.title }}</h2>
+              <p class="card-text"><strong>Описание:</strong> {{ profession.description }}</p>
+              {% if profession.extra_fields.exists %}
+                <h4>Дополнительные поля:</h4>
+                <ul class="list-group">
+                  {% for field in profession.extra_fields.all %}
+                    <li class="list-group-item">
+                      <strong>{{ field.title }}:</strong>
+                      {% if field.type == 'choice' %}
+                        {{ field.choices|join:", " }}
+                      {% else %}
+                        {{ field.type }}
+                      {% endif %}
+                    </li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            </div>
+          </article>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}

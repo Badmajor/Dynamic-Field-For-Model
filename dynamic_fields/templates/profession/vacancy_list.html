@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>{{ title_page }}</h1>
+  <br>
+  {% for vacancy in object_list %}
+    <article class="mb-5">
+      <h2>{{ vacancy.title }}</h2>
+      <p><strong>Компания:</strong> {{ vacancy.company }}</p>
+      <p><strong>Профессия:</strong> {{ vacancy.profession.title }}</p>
+      <p><strong>Описание:</strong> {{ vacancy.description }}</p>
+      {% if vacancy.extra_fields %}
+        <h3>Дополнительные поля:</h3>
+        <ul>
+          {% for key, value in vacancy.extra_fields.items %}
+            <li><strong>{{ key }}:</strong> {{ value }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </article>
+    <br>
+  {% endfor %}
+{% endblock %}
