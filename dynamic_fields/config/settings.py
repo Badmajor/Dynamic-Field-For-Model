@@ -1,13 +1,19 @@
 import os
 from pathlib import Path
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = "django-insecure-sy65d5r$no_gi+dstc(+q2hp(6)r)d7vga*)u+*-&zflu4r)g0"
 
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = list(
+    str(os.getenv("ALLOWED_HOSTS", default=["localhost,127.0.0.1,0.0.0.0,"])).split(",")
+)
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -50,19 +56,18 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 
 
-# Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": os.getenv("DB_ENGINE", default="django.db.backends.postgresql"),
+        "NAME": os.getenv("POSTGRES_DB", default="db_test"),
+        "USER": os.getenv("POSTGRES_USER", default="admin_test"),
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD", default="postgre_admin"),
+        "HOST": os.getenv("POSTGRES_HOST", default="db_test"),
+        "PORT": os.getenv("POSTGRES_PORT", default=5432),
     }
 }
 
 
-# Password validation
-# https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -79,17 +84,15 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LANGUAGE_CODE = "Ru-ru"
+LANGUAGE_CODE = "ru-RU"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Europe/Moscow"
 
 USE_I18N = True
 
 USE_TZ = True
 
+STATIC_ROOT = BASE_DIR / 'static'
 STATIC_URL = "static/"
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
-]
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
